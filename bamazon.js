@@ -27,7 +27,7 @@ connection.connect(function(err) {
 function afterConnection() {
   connection.query("SELECT * FROM products", function(err, res) {
     if (err) throw err;
-    console.log(res);  
+    console.table(res);
     customerRequest();
   })  
 
@@ -43,12 +43,26 @@ function customerRequest (){
             type: "input",
             name: "quanity",
             message: "How many of these items do you need?",
-        }
+            }
         ])
-        .then(answers => {
-         console.log("I'm working on getting that item for you!")
-         console.log(answers);
-  });
-    connection.end();
+          .then(answers => {
+          var itemNum = answers.idItem;
+          var quanityNum = answers.quanity;
+          
+          console.log("You selected item: " + itemNum + " and chose a quanity of: " + quanityNum, "\n");
+          console.log("I'm working on getting your order!","\n");
+        
+
+          //GETTING ITEMS
+          connection.query("SELECT * FROM products WHERE ?", [{id : answers.idItem}], function(err, res) {
+            if (err) throw err;
+
+            console.table(res);
+            
+          }
+          
+        );
+        connection.end();
+    });
   }
 }

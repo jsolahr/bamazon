@@ -54,10 +54,13 @@ function customerRequest (){
         
           //GETTING ITEMS
           connection.query("SELECT * FROM products WHERE ?", [{id : answers.idItem}], function(err, res) {
-            if (err) throw err;
-
+            
             console.table(res);
             
+            if (err) throw err;
+
+            
+          //CHECKING CURRENT STOCK and SUBTRACTING current from REMAINING
             var current_quanity = res[0].stock_quanity;
 			     	console.log("Current quantity in stock: " , current_quanity);
              var price = res[0].price;
@@ -69,12 +72,24 @@ function customerRequest (){
               console.log("Amount Remaining: " + remaining_quanity);
               console.log("Total Cost: " + (quanityNum * price) + "\n");
             
+            //UPDATING ITEMS  
+            connection.query("UPDATE products SET stock_quanity=? WHERE id=?",
+            [
+              remaining_quanity, itemNum,
+              ],
+              function(err, res){
+                if (err) throw err;
+              })
             
-            
+            connection.query("SELECT * FROM products", function(err, res) {
+              if (err) throw err;
+                console.table(res);
+          
+              })
             }
-          }
-        );
-        connection.end();
-    });
-  }
-}
+            
+              connection.end();
+          })
+        })
+      }
+    }

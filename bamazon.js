@@ -52,15 +52,27 @@ function customerRequest (){
           console.log("You selected item: " + itemNum + " and chose a quanity of: " + quanityNum, "\n");
           console.log("I'm working on getting your order!","\n");
         
-
           //GETTING ITEMS
           connection.query("SELECT * FROM products WHERE ?", [{id : answers.idItem}], function(err, res) {
             if (err) throw err;
 
             console.table(res);
             
-          }
+            var current_quanity = res[0].stock_quanity;
+			     	console.log("Current quantity in stock: " , current_quanity);
+             var price = res[0].price;
+             var remaining_quanity = current_quanity - quanityNum;
+            console.log("Remaining quantity in stock: " , remaining_quanity);
           
+            if (current_quanity > quanityNum) {
+
+              console.log("Amount Remaining: " + remaining_quanity);
+              console.log("Total Cost: " + (quanityNum * price) + "\n");
+            
+            
+            
+            }
+          }
         );
         connection.end();
     });
